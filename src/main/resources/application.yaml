@@ -1,0 +1,47 @@
+server:
+  port: 8082
+
+springdoc:
+  swagger-ui:
+    path: /requesting-service.html
+
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5433/postgres
+    username: user
+    password: password
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    url: jdbc:postgresql://localhost:5433/postgres
+    user: user
+    password: password
+
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      bootstrap-servers: localhost:9093
+      properties:
+        acks: 1
+        spring:
+          json:
+            trusted:
+              packages: '*'
+            add:
+              type:
+                headers: false
+    consumer:
+      bootstrap-servers: localhost:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      properties:
+        spring:
+          json:
+            add:
+              type:
+                headers: false
+
+topic:
+  immediate: immediate
+  scheduled: scheduled

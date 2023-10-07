@@ -1,0 +1,64 @@
+version: '3'
+services:
+  zookeeper_1:
+    image: confluentinc/cp-zookeeper
+    container_name: zookeeper_1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2182
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2182:2182"
+    networks:
+      - app-network
+
+  kafka_1:
+    image: confluentinc/cp-kafka
+    container_name: kafka_1
+    depends_on:
+      - zookeeper_1
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper_1:2182
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://host.docker.internal:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9093:9093"
+    networks:
+      - app-network
+
+  postgres_1:
+    image: postgres:13.3
+    container_name: postgres_1
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    ports:
+      - '5433:5433'
+    networks:
+      - app-network
+
+  processing-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: processing-service
+    depends_on:
+      - kafka_1
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka_1:9093
+      - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=host.docker.internal:9092
+      - SPRING_R2DBC_URL=r2dbc:postgresql://postgres_1:5433/postgres
+      - SPRING_R2DBC_USERNAME=user
+      - SPRING_R2DBC_PASSWORD=password
+      - SPRING_LIQUIBASE_CHANGELOG=classpath:db/changelog/db.changelog-master.yaml
+      - SPRING_LIQUIBASE_URL=jdbc:postgresql://postgres_1:5433/postgres
+      - SPRING_LIQUIBASE_USER=user
+      - SPRING_LIQUIBASE_PASSWORD=password
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
