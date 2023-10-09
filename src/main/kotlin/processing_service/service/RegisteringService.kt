@@ -1,6 +1,6 @@
 package processing_service.service
 
-import processing_service.dto.ScheduledMessageDto
+import processing_service.dto.message.ScheduledMessageDto
 import reactor.core.publisher.Mono
 
 interface RegisteringService {

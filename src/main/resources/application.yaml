@@ -1,9 +1,12 @@
 server:
   port: 8082
 
+user-service:
+  get-users-uri: http://localhost:8080/users/
+
 springdoc:
   swagger-ui:
-    path: /requesting-service.html
+    path: /processing-service.html
 
 spring:
   r2dbc:
@@ -23,11 +26,8 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       bootstrap-servers: localhost:9093
       properties:
-        acks: 1
         spring:
           json:
-            trusted:
-              packages: '*'
             add:
               type:
                 headers: false
@@ -35,13 +35,10 @@ spring:
       bootstrap-servers: localhost:9092
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
-      properties:
-        spring:
-          json:
-            add:
-              type:
-                headers: false
 
 topic:
   immediate: immediate
   scheduled: scheduled
+  email: email
+  telegram: telegram
+  sms: sms

@@ -28,17 +28,17 @@ dependencies {
 	/**
 	 * Spring boot starters
 	 */
+//	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework:spring-jdbc")
 	implementation("org.springframework.kafka:spring-kafka:3.0.11")
 
-	/**
-	 * Test containers
-	 */
-	implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
-	testImplementation("org.testcontainers:junit-jupiter")
-	testImplementation("org.testcontainers:postgresql")
-	testImplementation("com.redis.testcontainers:testcontainers-redis-junit-jupiter:1.4.6")
+//	/**
+//	 * Database
+//	 */
+//	implementation("org.liquibase:liquibase-core:4.24.0")
+//	runtimeOnly("org.postgresql:postgresql")
+//	runtimeOnly("org.postgresql:r2dbc-postgresql")
 
 	/**
 	 * Kotlin
@@ -57,6 +57,14 @@ dependencies {
 	implementation("org.mapstruct:mapstruct-processor:1.5.5.Final")
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+	/**
+	 * Test containers
+	 */
+	implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
+	testImplementation("org.testcontainers:junit-jupiter")
+	testImplementation("org.testcontainers:postgresql")
+	testImplementation("com.redis.testcontainers:testcontainers-redis-junit-jupiter:1.4.6")
 
 	/**
 	 * Tests
@@ -84,5 +92,5 @@ tasks.withType<Test> {
 }
 
 tasks.bootJar {
-	archiveFileName.set("application.jar")
+	archiveFileName.set("appl.jar")
 }

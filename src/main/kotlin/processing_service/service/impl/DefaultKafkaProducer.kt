@@ -8,7 +8,7 @@ import processing_service.service.KafkaProducer
 import java.util.logging.Logger
 
 @Service
-class DefaultKafkaProducer(@Autowired val kafkaTemplate: KafkaTemplate<String, Any>): KafkaProducer {
+class DefaultKafkaProducer(@Autowired private val kafkaTemplate: KafkaTemplate<String, Any>): KafkaProducer {
 
     private var logger: Logger = Logger.getLogger(DefaultKafkaProducer::class.java.name)
 
