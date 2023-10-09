@@ -1,6 +1,7 @@
 package processing_service.dto.message
 
-data class SmsMessageDto(
+
+data class PhoneMessageDto(
 
     val phone: String,
 

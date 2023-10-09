@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
-import processing_service.dto.message.ScheduledMessageDto
+import processing_service.dto.message.MessageDto
 import processing_service.service.RegisteringService
 
 @Component
@@ -16,7 +16,7 @@ class ScheduledMessageListener(@Autowired private val registeringService: Regist
 
     @KafkaListener(topics = ["\${topic.scheduled}"], groupId = "scheduled")
     fun listen(payload: ByteArray) {
-        val scheduledMessageDto = objectMapper.readValue(payload, ScheduledMessageDto::class.java)
+        val scheduledMessageDto = objectMapper.readValue(payload, MessageDto::class.java)
 
         logger.info("Scheduled message received: {}", scheduledMessageDto)
 

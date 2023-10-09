@@ -1,34 +1,26 @@
 package processing_service.service.impl
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import processing_service.client.UserServiceClient
+import processing_service.dto.PreferredContact
 import processing_service.dto.message.MessageDto
 import processing_service.service.MessageDistributor
 import processing_service.service.ProcessingService
-import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
-import requesting_service.dto.UserDto
 
 @Service
 class ProcessingServiceImpl(@Autowired private val userServiceClient: UserServiceClient,
-    val messageDistributors: List<MessageDistributor>) : ProcessingService {
+    val messageDistributors: Map<PreferredContact, MessageDistributor>) : ProcessingService {
 
-    private val logger = org.slf4j.LoggerFactory.getLogger(ProcessingServiceImpl::class.java)
+    private val logger = LoggerFactory.getLogger(ProcessingServiceImpl::class.java)
 
-    override fun processImmediateMessage(messageDto: MessageDto): Mono<Void> {
-        logger.info("Starting processImmediateMessage")
+    override fun processImmediateMessage(messageDto: MessageDto) {
+        logger.info("Starting processing message: {}", messageDto)
 
-        userServiceClient.getUsers(messageDto.receiverIds)// TODO: почему-то не обращается к дистрибьюторам, но правильно достает все из юзер сервиса
-            .flatMap<UserDto> { userDto ->
-                Flux.fromIterable(messageDistributors)
-                    .flatMap { distributor ->
-                        Mono.fromRunnable { distributor.distribute(userDto, messageDto) }
-                    }
-            }
+        userServiceClient.getUsers(messageDto.receiverIds)
+            .flatMap { messageDistributors[it.preferredContact]!!
+                .distribute(it, messageDto) }
             .subscribe()
-
-
-        return Mono.empty()
     }
 }

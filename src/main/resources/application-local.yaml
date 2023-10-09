@@ -1,0 +1,35 @@
+server:
+  port: 8082
+
+user-service:
+  get-users-uri: http://localhost:8080/users/
+
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5433/postgres
+    username: user
+    password: password
+
+  liquibase:
+    url: jdbc:postgresql://localhost:5433/postgres
+    user: user
+    password: password
+
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      properties:
+        spring:
+          json:
+            add:
+              type:
+                headers: false
+    consumer:
+      bootstrap-servers: localhost:9092
+
+topic:
+  immediate: immediate
+  scheduled: scheduled
+  email: email
+  telegram: telegram
+  sms: sms
