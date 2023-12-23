@@ -10,8 +10,10 @@ import processing_service.service.MessageDistributor
 import processing_service.service.ProcessingService
 
 @Service
-class ProcessingServiceImpl(@Autowired private val userServiceClient: UserServiceClient,
-    val messageDistributors: Map<PreferredContact, MessageDistributor>) : ProcessingService {
+class ProcessingServiceImpl(
+    private val userServiceClient: UserServiceClient,
+    private val messageDistributors: Map<PreferredContact, MessageDistributor>
+) : ProcessingService {
 
     private val logger = LoggerFactory.getLogger(ProcessingServiceImpl::class.java)
 
@@ -19,8 +21,10 @@ class ProcessingServiceImpl(@Autowired private val userServiceClient: UserServic
         logger.info("Starting processing message: {}", messageDto)
 
         userServiceClient.getUsers(messageDto.receiverIds)
-            .flatMap { messageDistributors[it.preferredContact]!!
-                .distribute(it, messageDto) }
+            .flatMap {
+                messageDistributors[it.preferredContact]!!
+                    .distribute(it, messageDto)
+            }
             .subscribe()
     }
 }
